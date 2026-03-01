@@ -1,4 +1,8 @@
-﻿extends Camera3D
+﻿# Deprecated: ThirdPersonCamera.gd replaced by C# implementation ThirdPersonCamera.cs
+# Kept as a stub to avoid accidental editor load errors if referenced elsewhere.
+# No runtime behavior here.
+
+extends Camera3D
 
 @export var target_path: NodePath
 @export var auto_find_target: bool = true
