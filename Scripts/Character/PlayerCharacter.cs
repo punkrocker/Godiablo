@@ -1,8 +1,9 @@
-﻿﻿using Godot;
+﻿using Diablo.Character;
+using Godot;
 using Diablo.Core.Events;
 using Diablo.Core.Enums;
 
-namespace Diablo.Character;
+namespace Diablo.Scripts.Character;
 
 /// <summary>
 /// 玩家角色控制器
@@ -33,6 +34,11 @@ public partial class PlayerCharacter : CharacterBase
         if (_interactionRay != null)
         {
             _interactionRay.TargetPosition = new Vector3(0, 0, -InteractionRange);
+        }
+
+        if (AnimPlayer == null)
+        {
+            GD.PrintErr($"AnimationPlayer not found on '{Name}'. Animations like 'attack' or 'cast_spell' will be unavailable.");
         }
     }
 
@@ -153,13 +159,56 @@ public partial class PlayerCharacter : CharacterBase
     private void PerformAttack()
     {
         // 由武器系统处理具体攻击逻辑
-        AnimPlayer?.Play("attack");
+        if (AnimPlayer != null)
+        {
+            if (AnimPlayer.HasAnimation("attack"))
+            {
+                AnimPlayer.Play("attack");
+                return;
+            }
+            else
+            {
+                GD.PrintErr($"Animation 'attack' not found on '{Name}' AnimationPlayer. Falling back to weapon Attack().");
+            }
+        }
+
+        // Fallback: try to call Attack on the equipped weapon instance (WeaponSlot/MeleeWeapon)
+        var weaponNode = GetNodeOrNull("WeaponSlot/MeleeWeapon");
+        if (weaponNode != null && weaponNode.HasMethod("Attack"))
+        {
+            var res = weaponNode.Call("Attack");
+            GD.Print($"Called weapon Attack(), result={res}");
+            return;
+        }
+
+        // As last fallback, try to call Attack on any child Weapon node
+        foreach (var child in GetChildren())
+        {
+            if (child is Node n && n.HasMethod("Attack"))
+            {
+                var r = n.Call("Attack");
+                GD.Print($"Called child {n.Name}.Attack(), result={r}");
+                return;
+            }
+        }
+
+        GD.PrintErr($"No attack animation or weapon Attack method found for '{Name}'.");
     }
 
     private void CastSpell()
     {
         // 由法杖/法术系统处理具体施法逻辑
-        AnimPlayer?.Play("cast_spell");
+        if (AnimPlayer != null)
+        {
+            if (AnimPlayer.HasAnimation("cast_spell"))
+            {
+                AnimPlayer.Play("cast_spell");
+            }
+            else
+            {
+                GD.PrintErr($"Animation 'cast_spell' not found on '{Name}' AnimationPlayer. Skipping play.");
+            }
+        }
     }
 
     private void UpdatePlayerStats()
