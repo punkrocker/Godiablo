@@ -1,4 +1,4 @@
-﻿using Godot;
+﻿﻿using Godot;
 using Diablo.Core.Events;
 using Diablo.Core.Enums;
 
@@ -49,7 +49,7 @@ public partial class PlayerCharacter : CharacterBase
     public override void _Input(InputEvent @event)
     {
         // 跳跃
-        if (@event.IsActionPressed(PlayerInputActions.Jump) && IsOnFloor())
+        if (InputMap.HasAction(PlayerInputActions.Jump) && @event.IsActionPressed(PlayerInputActions.Jump) && IsOnFloor())
         {
             var vel = Velocity;
             vel.Y = JumpVelocity;
@@ -57,19 +57,19 @@ public partial class PlayerCharacter : CharacterBase
         }
 
         // 交互键
-        if (@event.IsActionPressed(PlayerInputActions.Interact))
+        if (InputMap.HasAction(PlayerInputActions.Interact) && @event.IsActionPressed(PlayerInputActions.Interact))
         {
             TryInteract();
         }
 
         // 攻击
-        if (@event.IsActionPressed(PlayerInputActions.Attack))
+        if (InputMap.HasAction(PlayerInputActions.Attack) && @event.IsActionPressed(PlayerInputActions.Attack))
         {
             PerformAttack();
         }
 
         // 使用技能/魔法
-        if (@event.IsActionPressed(PlayerInputActions.CastSpell))
+        if (InputMap.HasAction(PlayerInputActions.CastSpell) && @event.IsActionPressed(PlayerInputActions.CastSpell))
         {
             CastSpell();
         }
@@ -95,8 +95,8 @@ public partial class PlayerCharacter : CharacterBase
         }
 
         // 冲刺与潜行
-        _isSprinting = Input.IsActionPressed(PlayerInputActions.Sprint) && Stats.CurrentStamina > 0;
-        _isSneaking = Input.IsActionPressed(PlayerInputActions.Sneak);
+        _isSprinting = InputMap.HasAction(PlayerInputActions.Sprint) && Input.IsActionPressed(PlayerInputActions.Sprint) && Stats.CurrentStamina > 0;
+        _isSneaking = InputMap.HasAction(PlayerInputActions.Sneak) && Input.IsActionPressed(PlayerInputActions.Sneak);
 
         float speed = MoveSpeed;
         if (_isSprinting)
@@ -169,4 +169,3 @@ public partial class PlayerCharacter : CharacterBase
         GameEvents.EmitPlayerStatsChanged(StatType.Stamina, Stats.CurrentStamina, Stats.MaxStamina);
     }
 }
-

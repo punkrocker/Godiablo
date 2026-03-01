@@ -1,8 +1,9 @@
-[gd_scene load_steps=5 format=3 uid="uid://main_scene"]
+[gd_scene format=3 uid="uid://dfh0ru1qibu7y"]
 
 [ext_resource type="PackedScene" path="res://scenes/player/player.tscn" id="1_player"]
 [ext_resource type="PackedScene" path="res://scenes/enemy/melee_enemy.tscn" id="2_enemy"]
 [ext_resource type="PackedScene" path="res://scenes/main/hud.tscn" id="3_hud"]
+[ext_resource type="Script" path="res://Scripts/Camera/ThirdPersonCamera.cs" id="4_thirdcam"]
 
 [sub_resource type="BoxMesh" id="1_ground"]
 size = Vector3(30, 0.2, 30)
@@ -10,33 +11,47 @@ size = Vector3(30, 0.2, 30)
 [sub_resource type="BoxShape3D" id="2_gnd_shape"]
 size = Vector3(30, 0.2, 30)
 
-[node name="MainScene" type="Node3D"]
+[sub_resource type="Environment" id="3_env"]
+background_mode = 0
 
-[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+[sub_resource type="NavigationMesh" id="4_navmesh"]
+# NavigationMesh will need baking in the editor to generate polygons; placeholder resource created
 
-[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+[node name="MainScene" type="Node3D" unique_id=2057561173]
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="MainScene" unique_id=1506097637]
+environment = SubResource("3_env")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="MainScene" unique_id=629643903]
 transform = Transform3D(0.866, -0.433, 0.25, 0, 0.5, 0.866, -0.5, -0.75, 0.433, 0, 10, 0)
 light_energy = 1.2
 shadow_enabled = true
 
-[node name="Ground" type="StaticBody3D" parent="."]
-collision_layer = 1
+[node name="Ground" type="StaticBody3D" parent="MainScene" unique_id=231220660]
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="Ground"]
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Ground" unique_id=417473266]
 mesh = SubResource("1_ground")
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Ground"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Ground" unique_id=1457708102]
 shape = SubResource("2_gnd_shape")
 
-[node name="NavigationRegion3D" type="NavigationRegion3D" parent="."]
+[node name="NavigationRegion3D" type="NavigationRegion3D" parent="MainScene" unique_id=2110470589]
+navigation_mesh = SubResource("4_navmesh")
 
-[node name="Player" parent="." instance=ExtResource("1_player")]
+[node name="Player" parent="MainScene" unique_id=1310149818 instance=ExtResource("1_player")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
 
-[node name="MeleeEnemy" parent="." instance=ExtResource("2_enemy")]
+[node name="MeleeEnemy" parent="MainScene" unique_id=214884040 instance=ExtResource("2_enemy")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5, 1, -5)
 
-[node name="CanvasLayer" type="CanvasLayer" parent="."]
+[node name="Camera3D" type="Camera3D" parent="MainScene" unique_id=987654321]
+script = ExtResource("4_thirdcam")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, -4)
+current = true
+
+[node name="CanvasLayer" type="CanvasLayer" parent="MainScene" unique_id=266350963]
 layer = 10
 
-[node name="HUD" parent="CanvasLayer" instance=ExtResource("3_hud")]
+[node name="HUD" parent="CanvasLayer" unique_id=570381883 instance=ExtResource("3_hud")]
+grow_horizontal = 2
+grow_vertical = 2

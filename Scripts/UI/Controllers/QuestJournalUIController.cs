@@ -1,4 +1,4 @@
-﻿using Godot;
+﻿﻿using Godot;
 using System.Collections.Generic;
 using Diablo.Quest;
 using Diablo.UI.Data;
@@ -34,7 +34,7 @@ public partial class QuestJournalUIController : Control
 
     public override void _Input(InputEvent @event)
     {
-        if (@event.IsActionPressed("open_quest_journal"))
+        if (InputMap.HasAction("open_quest_journal") && @event.IsActionPressed("open_quest_journal"))
         {
             Visible = !Visible;
             if (Visible) RefreshQuestList();

@@ -1,4 +1,4 @@
-﻿using Godot;
+﻿﻿using Godot;
 using System.Collections.Generic;
 using Diablo.Inventory;
 using Diablo.UI.Data;
@@ -32,7 +32,7 @@ public partial class InventoryUIController : Control
 
     public override void _Input(InputEvent @event)
     {
-        if (@event.IsActionPressed("open_inventory"))
+        if (InputMap.HasAction("open_inventory") && @event.IsActionPressed("open_inventory"))
         {
             ToggleVisibility();
         }
