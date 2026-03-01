@@ -1,0 +1,55 @@
+[gd_scene load_steps=5 format=3 uid="uid://ranged_enemy"]
+
+[ext_resource type="Script" path="res://Scripts/Enemy/Types/RangedEnemy.cs" id="1_re"]
+[ext_resource type="Script" path="res://Scripts/Enemy/AI/EnemyStateMachine.cs" id="2_sm"]
+[ext_resource type="Script" path="res://Scripts/Combat/HurtBox.cs" id="3_hb"]
+[ext_resource type="Script" path="res://Scripts/Loot/LootDropper.cs" id="4_ld"]
+
+[sub_resource type="CapsuleShape3D" id="1_col"]
+radius = 0.4
+height = 1.8
+
+[sub_resource type="CapsuleMesh" id="2_mesh"]
+radius = 0.4
+height = 1.8
+
+[node name="RangedEnemy" type="CharacterBody3D" groups=["Enemy"]]
+collision_layer = 1
+collision_mask = 1
+script = ExtResource("1_re")
+MoveSpeed = 3.0
+Gravity = 9.8
+AggroRange = 18.0
+AttackRange = 14.0
+DeaggroRange = 25.0
+XPReward = 60
+EntityId = "ranged_enemy"
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("1_col")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+mesh = SubResource("2_mesh")
+
+[node name="NavigationAgent3D" type="NavigationAgent3D" parent="."]
+path_desired_distance = 0.5
+target_desired_distance = 1.0
+
+[node name="StateMachine" type="Node" parent="."]
+script = ExtResource("2_sm")
+
+[node name="ProjectileSpawnPoint" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.2, -0.6)
+
+[node name="HurtBox" type="Area3D" parent="."]
+collision_layer = 1
+collision_mask = 4
+script = ExtResource("3_hb")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="HurtBox"]
+shape = SubResource("1_col")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+
+[node name="LootDropper" type="Node" parent="."]
+script = ExtResource("4_ld")

@@ -1,0 +1,82 @@
+[gd_scene load_steps=2 format=3 uid="uid://hud_scene"]
+
+[ext_resource type="Script" path="res://Scripts/UI/Controllers/HUDController.cs" id="1_hud"]
+
+[node name="HUD" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+script = ExtResource("1_hud")
+
+[node name="StatsPanel" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 16.0
+offset_top = -136.0
+offset_right = 260.0
+offset_bottom = -16.0
+
+[node name="HealthBar" type="ProgressBar" parent="StatsPanel"]
+custom_minimum_size = Vector2(0, 22)
+max_value = 120.0
+value = 120.0
+show_percentage = false
+
+[node name="ManaBar" type="ProgressBar" parent="StatsPanel"]
+custom_minimum_size = Vector2(0, 22)
+max_value = 60.0
+value = 60.0
+show_percentage = false
+
+[node name="StaminaBar" type="ProgressBar" parent="StatsPanel"]
+custom_minimum_size = Vector2(0, 22)
+max_value = 100.0
+value = 100.0
+show_percentage = false
+
+[node name="LabelsRow" type="HBoxContainer" parent="StatsPanel"]
+custom_minimum_size = Vector2(0, 20)
+
+[node name="HealthLabel" type="Label" parent="StatsPanel/LabelsRow"]
+text = "HP 120/120"
+size_flags_horizontal = 3
+
+[node name="ManaLabel" type="Label" parent="StatsPanel/LabelsRow"]
+text = "MP 60/60"
+size_flags_horizontal = 3
+
+[node name="StaminaLabel" type="Label" parent="StatsPanel/LabelsRow"]
+text = "SP 100/100"
+size_flags_horizontal = 3
+
+[node name="LevelLabel" type="Label" parent="StatsPanel/LabelsRow"]
+text = "Lv.1"
+size_flags_horizontal = 3
+
+[node name="CrosshairPanel" type="Panel" parent="."]
+layout_mode = 1
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -4.0
+offset_top = -4.0
+offset_right = 4.0
+offset_bottom = 4.0
+
+[node name="InteractionPromptLabel" type="Label" parent="."]
+layout_mode = 1
+anchor_left = 0.5
+anchor_top = 0.75
+anchor_right = 0.5
+anchor_bottom = 0.75
+offset_left = -120.0
+offset_top = -18.0
+offset_right = 120.0
+offset_bottom = 18.0
+horizontal_alignment = 1
+text = "[E] 交互"
+visible = false

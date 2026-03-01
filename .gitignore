@@ -1,0 +1,41 @@
+# Godot 4+ specific ignores
+.godot/
+/android/
+
+# Godot
+.import/
+*.import
+.export/
+export_presets.cfg
+
+# C# / .NET / Mono
+.mono/
+bin/
+obj/
+*.csproj.user
+*.user
+*.userprefs
+*.suo
+*.pdb
+*.mdb
+*.dll
+
+# IDEs
+.vs/
+.vscode/
+.idea/
+*.sln.iml
+
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Backups and temp files
+*.bak
+*.tmp
+*.swp
+*~
+
+# Logs
+*.log

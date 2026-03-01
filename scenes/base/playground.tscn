@@ -1,0 +1,15 @@
+[gd_scene format=3 uid="uid://dbvvo8q05wrv0"]
+
+[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_1p6b4"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_x8ts6"]
+
+[node name="Playground" type="Node3D" unique_id=885616201]
+script = ExtResource("1")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="." unique_id=1213153106]
+physics_material_override = SubResource("PhysicsMaterial_1p6b4")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D" unique_id=1170841122]
+transform = Transform3D(100, 0, 0, 0, 100, 0, 0, 0, 100, 0, 0, 0)
+shape = SubResource("BoxShape3D_x8ts6")

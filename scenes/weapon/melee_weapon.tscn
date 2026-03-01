@@ -1,0 +1,31 @@
+[gd_scene load_steps=5 format=3 uid="uid://melee_weapon"]
+
+[ext_resource type="Script" path="res://Scripts/Combat/Weapon/MeleeWeapon.cs" id="1_mw"]
+[ext_resource type="Script" path="res://Scripts/Combat/HitBox.cs" id="2_hb"]
+[ext_resource type="Resource" path="res://Data/Weapons/sword_basic.tres" id="3_wd"]
+
+[sub_resource type="BoxMesh" id="1_mesh"]
+size = Vector3(0.1, 0.8, 0.1)
+
+[sub_resource type="BoxShape3D" id="2_shape"]
+size = Vector3(0.25, 0.9, 0.25)
+
+[node name="MeleeWeapon" type="Node3D"]
+script = ExtResource("1_mw")
+Data = ExtResource("3_wd")
+MaxComboCount = 3
+ComboWindowTime = 0.8
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.4, 0)
+mesh = SubResource("1_mesh")
+
+[node name="HitBox" type="Area3D" parent="."]
+collision_layer = 4
+collision_mask = 3
+monitoring = false
+script = ExtResource("2_hb")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="HitBox"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.4, 0)
+shape = SubResource("2_shape")

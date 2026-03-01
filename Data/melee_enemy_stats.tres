@@ -1,0 +1,27 @@
+[gd_resource type="Resource" script_class="CharacterStats" load_steps=2 format=3 uid="uid://melee_enemy_stats"]
+
+[ext_resource type="Script" path="res://Scripts/Character/CharacterStats.cs" id="1_cs"]
+
+[resource]
+script = ExtResource("1_cs")
+Level = 1
+CurrentXP = 0
+XPToNextLevel = 9999
+MaxHealth = 80.0
+CurrentHealth = 80.0
+MaxMana = 0.0
+CurrentMana = 0.0
+MaxStamina = 999.0
+CurrentStamina = 999.0
+Strength = 8
+Agility = 6
+Intelligence = 2
+Endurance = 8
+Luck = 1
+HealthRegenRate = 0.5
+ManaRegenRate = 0.0
+StaminaRegenRate = 999.0
+BaseArmor = 3.0
+CriticalChance = 0.02
+CriticalMultiplier = 1.2
+
