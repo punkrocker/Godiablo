@@ -5,7 +5,9 @@
     <EnableDynamicLoading>true</EnableDynamicLoading>
   </PropertyGroup>
   <ItemGroup>
+    <Content Include="CAMERA_AND_BUILD_INSTRUCTIONS.md" />
     <Content Include="README.md" />
     <Content Include="README2.md" />
+    <Content Include="Scripts\Core\InputSetup.gd" />
   </ItemGroup>
 </Project>

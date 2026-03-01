@@ -44,33 +44,23 @@ func _ready():
 	}
 
 	# Ensure mouse buttons are available as actions where appropriate
-	# (we'll add the actual mouse-button events explicitly below)
 	if not InputMap.has_action("camera_rotate"):
 		InputMap.add_action("camera_rotate")
 	if not InputMap.has_action("camera_pan"):
 		InputMap.add_action("camera_pan")
 
-	# Iterate and ensure keyboard/button actions exist; create events and persist only if not already persisted
+	# Iterate and ensure keyboard/button actions exist; create events only at runtime
 	for action_name in actions_map.keys():
 		# ensure action exists in InputMap
 		if not InputMap.has_action(action_name):
 			InputMap.add_action(action_name)
 
-		# If project already has persisted events for this action, skip creating duplicates
-		var setting_key = "input/actions/" + action_name
-		if ProjectSettings.has_setting(setting_key):
-			var existing = ProjectSettings.get_setting(setting_key)
-			if existing and existing.size() > 0:
-				continue
-
-		# Create events based on keys
+		# Create events based on keys (always add; InputMap will accept duplicates but it's safe for runtime)
 		var keys = actions_map[action_name]
-		var created_events := []
 		for k in keys:
 			var ev = InputEventKey.new()
 			ev.keycode = k
 			InputMap.action_add_event(action_name, ev)
-			created_events.append(ev)
 
 		# Special cases: add mouse buttons for camera and attack
 		if action_name == "attack":
@@ -78,24 +68,19 @@ func _ready():
 			mb_a.button_index = MOUSE_BUTTON_LEFT
 			mb_a.pressed = true
 			InputMap.action_add_event(action_name, mb_a)
-			created_events.append(mb_a)
 
 		if action_name == "camera_rotate":
 			var mb_r = InputEventMouseButton.new()
 			mb_r.button_index = MOUSE_BUTTON_RIGHT
 			mb_r.pressed = true
 			InputMap.action_add_event(action_name, mb_r)
-			created_events.append(mb_r)
 
 		if action_name == "camera_pan":
 			var mb_m = InputEventMouseButton.new()
 			mb_m.button_index = MOUSE_BUTTON_MIDDLE
 			mb_m.pressed = true
 			InputMap.action_add_event(action_name, mb_m)
-			created_events.append(mb_m)
 
-		# Persist the created_events to ProjectSettings so the editor shows them
-		ProjectSettings.set_setting(setting_key, created_events)
-
-	# Save project settings (writes project.godot)
-	ProjectSettings.save()
+# Note: we intentionally do NOT persist to ProjectSettings here to avoid writing
+# structures that may not match the format expected by this Godot version.
+# The editor's InputMap UI can be used to persist preferred bindings.
