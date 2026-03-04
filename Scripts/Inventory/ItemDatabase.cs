@@ -46,8 +46,9 @@ public partial class ItemDatabase : Node
         {
             if (fileName.EndsWith(".tres") || fileName.EndsWith(".res"))
             {
-                var item = GD.Load<ItemData>(path + fileName);
-                if (item != null && !string.IsNullOrEmpty(item.ItemId))
+                // 使用非泛型加载并在运行时判断类型，避免把非 ItemData 的资源强制转换造成异常
+                var res = GD.Load(path + fileName);
+                if (res is ItemData item && !string.IsNullOrEmpty(item.ItemId))
                 {
                     _items[item.ItemId] = item;
                 }
@@ -83,4 +84,3 @@ public partial class ItemDatabase : Node
         }
     }
 }
-
