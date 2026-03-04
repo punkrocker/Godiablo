@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://t5kwwp4cicc2"]
 
-[ext_resource type="PackedScene" path="res://scenes/player/player.tscn" id="1"]
+[ext_resource type="PackedScene" uid="uid://cnqm0by47mcdl" path="res://scenes/player/player.tscn" id="1"]
 [ext_resource type="PackedScene" path="res://scenes/enemy/melee_enemy.tscn" id="2"]
 [ext_resource type="Script" uid="uid://dpx6a5u0ve8l3" path="res://Scripts/Camera/ThirdPersonCamera.cs" id="3"]
 [ext_resource type="PackedScene" path="res://scenes/main/hud.tscn" id="4"]

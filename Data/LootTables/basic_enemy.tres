@@ -1,0 +1,7 @@
+[gd_resource type="Resource" script_class="LootTable" format=3 uid="uid://db4corxbb5y37"]
+
+[ext_resource type="Script" uid="uid://byhjlyukjdplr" path="res://Scripts/Loot/LootTable.cs" id="1_ho5ud"]
+
+[resource]
+script = ExtResource("1_ho5ud")
+metadata/_custom_type_script = "uid://byhjlyukjdplr"

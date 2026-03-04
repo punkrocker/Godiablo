@@ -1,10 +1,11 @@
-[gd_scene load_steps=7 format=3 uid="uid://melee_enemy"]
+[gd_scene format=3 uid="uid://dqfuvx4o5nu6i"]
 
-[ext_resource type="Script" path="res://Scripts/Enemy/Types/MeleeEnemy.cs" id="1_me"]
-[ext_resource type="Script" path="res://Scripts/Enemy/AI/EnemyStateMachine.cs" id="2_sm"]
-[ext_resource type="Script" path="res://Scripts/Combat/HurtBox.cs" id="3_hb"]
-[ext_resource type="Script" path="res://Scripts/Loot/LootDropper.cs" id="4_ld"]
+[ext_resource type="Script" uid="uid://bnc2pwexg4mj3" path="res://Scripts/Enemy/Types/MeleeEnemy.cs" id="1_me"]
+[ext_resource type="Script" uid="uid://bnius2la7qewe" path="res://Scripts/Enemy/AI/EnemyStateMachine.cs" id="2_sm"]
+[ext_resource type="Script" uid="uid://b2b4gjmx2152s" path="res://Scripts/Combat/HurtBox.cs" id="3_hb"]
+[ext_resource type="Script" uid="uid://cl8aanbfwotwg" path="res://Scripts/Loot/LootDropper.cs" id="4_ld"]
 [ext_resource type="Resource" path="res://Data/melee_enemy_stats.tres" id="5_stats"]
+[ext_resource type="Resource" uid="uid://db4corxbb5y37" path="res://Data/LootTables/basic_enemy.tres" id="6_hydb6"]
 
 [sub_resource type="CapsuleShape3D" id="1_col"]
 radius = 0.4
@@ -14,44 +15,36 @@ height = 1.8
 radius = 0.4
 height = 1.8
 
-[node name="MeleeEnemy" type="CharacterBody3D" groups=["Enemy"]]
-collision_layer = 1
-collision_mask = 1
+[node name="MeleeEnemy" type="CharacterBody3D" unique_id=158453087 groups=["Enemy"]]
 script = ExtResource("1_me")
-Stats = ExtResource("5_stats")
-MoveSpeed = 3.5
-Gravity = 9.8
-EntityId = "melee_enemy_01"
 AggroRange = 12.0
 AttackRange = 1.8
 DeaggroRange = 22.0
-XPReward = 50
-ChargeSpeed = 8.0
-ChargeDistance = 8.0
-ChargeCooldown = 10.0
+Stats = ExtResource("5_stats")
+MoveSpeed = 3.5
+EntityId = "melee_enemy_01"
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=1003954848]
 shape = SubResource("1_col")
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+[node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=944923076]
 mesh = SubResource("2_mesh")
 
-[node name="NavigationAgent3D" type="NavigationAgent3D" parent="."]
+[node name="NavigationAgent3D" type="NavigationAgent3D" parent="." unique_id=1916142245]
 path_desired_distance = 0.5
-target_desired_distance = 1.0
 
-[node name="StateMachine" type="Node" parent="."]
+[node name="StateMachine" type="Node" parent="." unique_id=2102232209]
 script = ExtResource("2_sm")
 
-[node name="HurtBox" type="Area3D" parent="."]
-collision_layer = 1
-collision_mask = 4
+[node name="HurtBox" type="Area3D" parent="." unique_id=441434286]
+collision_mask = 8
 script = ExtResource("3_hb")
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="HurtBox"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="HurtBox" unique_id=80486584]
 shape = SubResource("1_col")
 
-[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+[node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=1817737750]
 
-[node name="LootDropper" type="Node" parent="."]
+[node name="LootDropper" type="Node" parent="." unique_id=1739470983]
 script = ExtResource("4_ld")
+Table = ExtResource("6_hydb6")
