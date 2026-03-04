@@ -1,12 +1,9 @@
-[gd_resource type="Resource" script_class="CharacterStats" load_steps=2 format=3 uid="uid://player_stats"]
+[gd_resource type="Resource" script_class="CharacterStats" format=3 uid="uid://4yeyn3vlp5jt"]
 
-[ext_resource type="Script" path="res://Scripts/Character/CharacterStats.cs" id="1_cs"]
+[ext_resource type="Script" uid="uid://c3w4ptm6gp7yc" path="res://Scripts/Character/CharacterStats.cs" id="1_cs"]
 
 [resource]
 script = ExtResource("1_cs")
-Level = 1
-CurrentXP = 0
-XPToNextLevel = 100
 MaxHealth = 120.0
 CurrentHealth = 120.0
 MaxMana = 60.0
@@ -14,14 +11,8 @@ CurrentMana = 60.0
 MaxStamina = 100.0
 CurrentStamina = 100.0
 Strength = 12
-Agility = 10
 Intelligence = 8
-Endurance = 10
-Luck = 5
 HealthRegenRate = 1.5
-ManaRegenRate = 2.0
 StaminaRegenRate = 8.0
 BaseArmor = 5.0
 CriticalChance = 0.05
-CriticalMultiplier = 1.5
-

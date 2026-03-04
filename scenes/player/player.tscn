@@ -1,75 +1,74 @@
-[gd_scene load_steps=8 format=3 uid="uid://player_scene"]
+[gd_scene format=3 uid="uid://cnqm0by47mcdl"]
 
-[ext_resource type="Script" path="res://Scripts/Character/PlayerCharacter.cs" id="1_pc"]
-[ext_resource type="Script" path="res://Scripts/Combat/HurtBox.cs" id="2_hb"]
-[ext_resource type="Script" path="res://Scripts/Inventory/Inventory.cs" id="3_inv"]
-[ext_resource type="Script" path="res://Scripts/Inventory/EquipmentManager.cs" id="4_eq"]
-[ext_resource type="PackedScene" path="res://scenes/weapon/melee_weapon.tscn" id="5_wep"]
-[ext_resource type="Resource" path="res://Data/player_stats.tres" id="6_stats"]
+[ext_resource type="Script" uid="uid://bpc78iyx4x3pk" path="res://Scripts/Character/PlayerCharacter.cs" id="1"]
+[ext_resource type="Script" uid="uid://b2b4gjmx2152s" path="res://Scripts/Combat/HurtBox.cs" id="2"]
+[ext_resource type="Script" uid="uid://8crxucuuvuaq" path="res://Scripts/Inventory/Inventory.cs" id="3"]
+[ext_resource type="Script" uid="uid://nx04neonrpue" path="res://Scripts/Inventory/EquipmentManager.cs" id="4"]
+[ext_resource type="PackedScene" path="res://scenes/weapon/melee_weapon.tscn" id="5"]
+[ext_resource type="Resource" uid="uid://4yeyn3vlp5jt" path="res://Data/player_stats.tres" id="6"]
 
-[sub_resource type="CapsuleShape3D" id="1_col"]
+[sub_resource type="CapsuleShape3D" id="1"]
 radius = 0.4
 height = 1.8
 
-[sub_resource type="CapsuleMesh" id="2_mesh"]
+[sub_resource type="CapsuleMesh" id="2"]
 radius = 0.4
 height = 1.8
 
-[sub_resource type="Animation" id="3"]
-length = 0.0
-loop = false
+[sub_resource type="Animation" id="Animation_75vfm"]
+resource_name = "attack"
 
-[node name="Player" type="CharacterBody3D"]
-collision_layer = 2
-collision_mask = 1
-script = ExtResource("1_pc")
-Stats = ExtResource("6_stats")
-MoveSpeed = 5.0
-Gravity = 9.8
-EntityId = "player"
-SprintMultiplier = 1.6
-SneakMultiplier = 0.5
-StaminaDrainRate = 10.0
-InteractionRange = 3.0
-JumpVelocity = 5.0
+[sub_resource type="Animation" id="Animation_0owmy"]
+resource_name = "cast_spell"
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
-shape = SubResource("1_col")
+[sub_resource type="Animation" id="Animation_qek5x"]
+resource_name = "death"
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
-mesh = SubResource("2_mesh")
-
-[node name="Camera3D" type="Camera3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 0.92, -0.39, 0, 0.39, 0.92, 0, 1.8, 3.5)
-current = true
-
-[node name="InteractionRay" type="RayCast3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.0, 0)
-target_position = Vector3(0, 0, -3)
-enabled = true
-
-[node name="HurtBox" type="Area3D" parent="."]
-collision_layer = 2
-collision_mask = 4
-script = ExtResource("2_hb")
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="HurtBox"]
-shape = SubResource("1_col")
-
-[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
-animations = {
-"attack": SubResource("3")
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_5gtgg"]
+_data = {
+&"attack": SubResource("Animation_75vfm"),
+&"cast_spell": SubResource("Animation_0owmy"),
+&"death": SubResource("Animation_qek5x")
 }
 
-[node name="Inventory" type="Node" parent="."]
-script = ExtResource("3_inv")
-MaxSlots = 40
-MaxWeight = 300.0
+[node name="Player" type="CharacterBody3D" unique_id=555671002 groups=["Player"]]
+collision_layer = 2
+script = ExtResource("1")
+Stats = ExtResource("6")
+EntityId = "player"
 
-[node name="EquipmentManager" type="Node" parent="."]
-script = ExtResource("4_eq")
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=2140304121]
+shape = SubResource("1")
 
-[node name="WeaponSlot" type="Node3D" parent="."]
+[node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=1650241939]
+mesh = SubResource("2")
+
+[node name="Camera3D" type="Camera3D" parent="." unique_id=960560741]
+transform = Transform3D(1, 0, 0, 0, 0.9992497, 0, 0, 0, 0.9992497, 0, 1.8, 3.5)
+current = true
+
+[node name="InteractionRay" type="RayCast3D" parent="." unique_id=1184899520]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+target_position = Vector3(0, 0, -3)
+
+[node name="HurtBox" type="Area3D" parent="." unique_id=1239763451]
+collision_layer = 2
+collision_mask = 8
+script = ExtResource("2")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="HurtBox" unique_id=847664621]
+shape = SubResource("1")
+
+[node name="Inventory" type="Node" parent="." unique_id=2145216551]
+script = ExtResource("3")
+
+[node name="EquipmentManager" type="Node" parent="." unique_id=281090615]
+script = ExtResource("4")
+
+[node name="WeaponSlot" type="Node3D" parent="." unique_id=1752730922]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, 0.9, -0.3)
 
-[node name="MeleeWeapon" parent="WeaponSlot" instance=ExtResource("5_wep")]
+[node name="MeleeWeapon" parent="WeaponSlot" unique_id=1423410705 instance=ExtResource("5")]
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=1267782460]
+libraries/ = SubResource("AnimationLibrary_5gtgg")

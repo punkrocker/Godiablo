@@ -1,4 +1,4 @@
-﻿using Diablo.Character;
+using Diablo.Character;
 using Godot;
 using Diablo.Core.Events;
 using Diablo.Core.Enums;
@@ -11,210 +11,221 @@ namespace Diablo.Scripts.Character;
 /// </summary>
 public partial class PlayerCharacter : CharacterBase
 {
-    [Export] public float SprintMultiplier { get; set; } = 1.6f;
-    [Export] public float SneakMultiplier { get; set; } = 0.5f;
-    [Export] public float StaminaDrainRate { get; set; } = 10f;
-    [Export] public float InteractionRange { get; set; } = 3.0f;
-    [Export] public float JumpVelocity { get; set; } = 5.0f;
+	[Export] public float SprintMultiplier { get; set; } = 1.6f;
+	[Export] public float SneakMultiplier { get; set; } = 0.5f;
+	[Export] public float StaminaDrainRate { get; set; } = 10f;
+	[Export] public float InteractionRange { get; set; } = 3.0f;
+	[Export] public float JumpVelocity { get; set; } = 5.0f;
 
-    private Camera3D _camera;
-    private RayCast3D _interactionRay;
-    private bool _isSprinting;
-    private bool _isSneaking;
 
-    public bool IsSprinting => _isSprinting;
-    public bool IsSneaking => _isSneaking;
+	private Camera3D _camera;
+	private RayCast3D _interactionRay;
+	private bool _isSprinting;
+	private bool _isSneaking;
 
-    public override void _Ready()
-    {
-        base._Ready();
-        _camera = GetNodeOrNull<Camera3D>("Camera3D");
-        _interactionRay = GetNodeOrNull<RayCast3D>("InteractionRay");
+	public bool IsSprinting => _isSprinting;
+	public bool IsSneaking => _isSneaking;
 
-        if (_interactionRay != null)
-        {
-            _interactionRay.TargetPosition = new Vector3(0, 0, -InteractionRange);
-        }
+	public override void _Ready()
+	{
+		base._Ready();
+		_camera = GetNodeOrNull<Camera3D>("Camera3D");
+		_interactionRay = GetNodeOrNull<RayCast3D>("InteractionRay");
 
-        if (AnimPlayer == null)
-        {
-            GD.PrintErr($"AnimationPlayer not found on '{Name}'. Animations like 'attack' or 'cast_spell' will be unavailable.");
-        }
-    }
+		if (_interactionRay != null)
+		{
+			_interactionRay.TargetPosition = new Vector3(0, 0, -InteractionRange);
+		}
 
-    public override void _PhysicsProcess(double delta)
-    {
-        base._PhysicsProcess(delta);
-        if (IsDead) return;
+		if (AnimPlayer == null)
+		{
+			GD.PrintErr(
+				$"AnimationPlayer not found on '{Name}'. Animations like 'attack' or 'cast_spell' will be unavailable.");
+		}
 
-        HandleMovement((float)delta);
-        HandleInteraction();
-        UpdatePlayerStats();
-    }
+		this.MoveSpeed = 5.0f;
+		this.Gravity = 9.8f;
+		this.EntityId = "player";
+		// Stats 通过资源加载res://Data/player_stats.tres
+		this.Stats = ResourceLoader.Load<CharacterStats>("res://Data/player_stats.tres");
+	}
 
-    public override void _Input(InputEvent @event)
-    {
-        // 跳跃
-        if (InputMap.HasAction(PlayerInputActions.Jump) && @event.IsActionPressed(PlayerInputActions.Jump) && IsOnFloor())
-        {
-            var vel = Velocity;
-            vel.Y = JumpVelocity;
-            Velocity = vel;
-        }
+	public override void _PhysicsProcess(double delta)
+	{
+		base._PhysicsProcess(delta);
+		if (IsDead) return;
 
-        // 交互键
-        if (InputMap.HasAction(PlayerInputActions.Interact) && @event.IsActionPressed(PlayerInputActions.Interact))
-        {
-            TryInteract();
-        }
+		HandleMovement((float)delta);
+		HandleInteraction();
+		UpdatePlayerStats();
+	}
 
-        // 攻击
-        if (InputMap.HasAction(PlayerInputActions.Attack) && @event.IsActionPressed(PlayerInputActions.Attack))
-        {
-            PerformAttack();
-        }
+	public override void _Input(InputEvent @event)
+	{
+		// 跳跃
+		if (InputMap.HasAction(PlayerInputActions.Jump) && @event.IsActionPressed(PlayerInputActions.Jump) &&
+			IsOnFloor())
+		{
+			var vel = Velocity;
+			vel.Y = JumpVelocity;
+			Velocity = vel;
+		}
 
-        // 使用技能/魔法
-        if (InputMap.HasAction(PlayerInputActions.CastSpell) && @event.IsActionPressed(PlayerInputActions.CastSpell))
-        {
-            CastSpell();
-        }
-    }
+		// 交互键
+		if (InputMap.HasAction(PlayerInputActions.Interact) && @event.IsActionPressed(PlayerInputActions.Interact))
+		{
+			TryInteract();
+		}
 
-    private void HandleMovement(float delta)
-    {
-        var inputDir = Input.GetVector(
-            PlayerInputActions.MoveLeft, PlayerInputActions.MoveRight,
-            PlayerInputActions.MoveForward, PlayerInputActions.MoveBackward
-        );
+		// 攻击
+		if (InputMap.HasAction(PlayerInputActions.Attack) && @event.IsActionPressed(PlayerInputActions.Attack))
+		{
+			PerformAttack();
+		}
 
-        var direction = Vector3.Zero;
-        if (_camera != null)
-        {
-            var camTransform = _camera.GlobalTransform;
-            direction = (camTransform.Basis * new Vector3(inputDir.X, 0, inputDir.Y)).Normalized();
-            direction.Y = 0;
-        }
-        else
-        {
-            direction = new Vector3(inputDir.X, 0, inputDir.Y).Normalized();
-        }
+		// 使用技能/魔法
+		if (InputMap.HasAction(PlayerInputActions.CastSpell) && @event.IsActionPressed(PlayerInputActions.CastSpell))
+		{
+			CastSpell();
+		}
+	}
 
-        // 冲刺与潜行
-        _isSprinting = InputMap.HasAction(PlayerInputActions.Sprint) && Input.IsActionPressed(PlayerInputActions.Sprint) && Stats.CurrentStamina > 0;
-        _isSneaking = InputMap.HasAction(PlayerInputActions.Sneak) && Input.IsActionPressed(PlayerInputActions.Sneak);
+	private void HandleMovement(float delta)
+	{
+		var inputDir = Input.GetVector(
+			PlayerInputActions.MoveLeft, PlayerInputActions.MoveRight,
+			PlayerInputActions.MoveForward, PlayerInputActions.MoveBackward
+		);
 
-        float speed = MoveSpeed;
-        if (_isSprinting)
-        {
-            speed *= SprintMultiplier;
-            Stats.ModifyStamina(-StaminaDrainRate * delta);
-        }
-        else if (_isSneaking)
-        {
-            speed *= SneakMultiplier;
-        }
+		var direction = Vector3.Zero;
+		if (_camera != null)
+		{
+			var camTransform = _camera.GlobalTransform;
+			direction = (camTransform.Basis * new Vector3(inputDir.X, 0, inputDir.Y)).Normalized();
+			direction.Y = 0;
+		}
+		else
+		{
+			direction = new Vector3(inputDir.X, 0, inputDir.Y).Normalized();
+		}
 
-        // 朝向移动方向
-        if (direction != Vector3.Zero)
-        {
-            var lookTarget = GlobalPosition + direction;
-            lookTarget.Y = GlobalPosition.Y;
-            LookAt(lookTarget);
-        }
+		// 冲刺与潜行
+		_isSprinting = InputMap.HasAction(PlayerInputActions.Sprint) &&
+					   Input.IsActionPressed(PlayerInputActions.Sprint) && Stats.CurrentStamina > 0;
+		_isSneaking = InputMap.HasAction(PlayerInputActions.Sneak) && Input.IsActionPressed(PlayerInputActions.Sneak);
 
-        ApplyMovement(direction, speed, delta);
-    }
+		float speed = MoveSpeed;
+		if (_isSprinting)
+		{
+			speed *= SprintMultiplier;
+			Stats.ModifyStamina(-StaminaDrainRate * delta);
+		}
+		else if (_isSneaking)
+		{
+			speed *= SneakMultiplier;
+		}
 
-    private void HandleInteraction()
-    {
-        if (_interactionRay == null) return;
+		// 朝向移动方向
+		if (direction != Vector3.Zero)
+		{
+			var lookTarget = GlobalPosition + direction;
+			lookTarget.Y = GlobalPosition.Y;
+			LookAt(lookTarget);
+		}
 
-        if (_interactionRay.IsColliding())
-        {
-            var collider = _interactionRay.GetCollider();
-            if (collider is Node node)
-            {
-                GameEvents.EmitInteractionAvailable(node.Name, $"按 [E] 交互: {node.Name}");
-            }
-        }
-        else
-        {
-            GameEvents.EmitInteractionCleared();
-        }
-    }
+		ApplyMovement(direction, speed, delta);
+	}
 
-    private void TryInteract()
-    {
-        if (_interactionRay == null || !_interactionRay.IsColliding()) return;
+	private void HandleInteraction()
+	{
+		if (_interactionRay == null) return;
 
-        var collider = _interactionRay.GetCollider();
-        // 交互逻辑由具体的可交互对象处理
-        if (collider is Node node && node.HasMethod("OnInteract"))
-        {
-            node.Call("OnInteract", this);
-        }
-    }
+		if (_interactionRay.IsColliding())
+		{
+			var collider = _interactionRay.GetCollider();
+			if (collider is Node node)
+			{
+				GameEvents.EmitInteractionAvailable(node.Name, $"按 [E] 交互: {node.Name}");
+			}
+		}
+		else
+		{
+			GameEvents.EmitInteractionCleared();
+		}
+	}
 
-    private void PerformAttack()
-    {
-        // 由武器系统处理具体攻击逻辑
-        if (AnimPlayer != null)
-        {
-            if (AnimPlayer.HasAnimation("attack"))
-            {
-                AnimPlayer.Play("attack");
-                return;
-            }
-            else
-            {
-                GD.PrintErr($"Animation 'attack' not found on '{Name}' AnimationPlayer. Falling back to weapon Attack().");
-            }
-        }
+	private void TryInteract()
+	{
+		if (_interactionRay == null || !_interactionRay.IsColliding()) return;
 
-        // Fallback: try to call Attack on the equipped weapon instance (WeaponSlot/MeleeWeapon)
-        var weaponNode = GetNodeOrNull("WeaponSlot/MeleeWeapon");
-        if (weaponNode != null && weaponNode.HasMethod("Attack"))
-        {
-            var res = weaponNode.Call("Attack");
-            GD.Print($"Called weapon Attack(), result={res}");
-            return;
-        }
+		var collider = _interactionRay.GetCollider();
+		// 交互逻辑由具体的可交互对象处理
+		if (collider is Node node && node.HasMethod("OnInteract"))
+		{
+			node.Call("OnInteract", this);
+		}
+	}
 
-        // As last fallback, try to call Attack on any child Weapon node
-        foreach (var child in GetChildren())
-        {
-            if (child is Node n && n.HasMethod("Attack"))
-            {
-                var r = n.Call("Attack");
-                GD.Print($"Called child {n.Name}.Attack(), result={r}");
-                return;
-            }
-        }
+	private void PerformAttack()
+	{
+		// 由武器系统处理具体攻击逻辑
+		if (AnimPlayer != null)
+		{
+			if (AnimPlayer.HasAnimation("attack"))
+			{
+				AnimPlayer.Play("attack");
+				return;
+			}
+			else
+			{
+				GD.PrintErr(
+					$"Animation 'attack' not found on '{Name}' AnimationPlayer. Falling back to weapon Attack().");
+			}
+		}
 
-        GD.PrintErr($"No attack animation or weapon Attack method found for '{Name}'.");
-    }
+		// Fallback: try to call Attack on the equipped weapon instance (WeaponSlot/MeleeWeapon)
+		var weaponNode = GetNodeOrNull("WeaponSlot/MeleeWeapon");
+		if (weaponNode != null && weaponNode.HasMethod("Attack"))
+		{
+			var res = weaponNode.Call("Attack");
+			GD.Print($"Called weapon Attack(), result={res}");
+			return;
+		}
 
-    private void CastSpell()
-    {
-        // 由法杖/法术系统处理具体施法逻辑
-        if (AnimPlayer != null)
-        {
-            if (AnimPlayer.HasAnimation("cast_spell"))
-            {
-                AnimPlayer.Play("cast_spell");
-            }
-            else
-            {
-                GD.PrintErr($"Animation 'cast_spell' not found on '{Name}' AnimationPlayer. Skipping play.");
-            }
-        }
-    }
+		// As last fallback, try to call Attack on any child Weapon node
+		foreach (var child in GetChildren())
+		{
+			if (child is Node n && n.HasMethod("Attack"))
+			{
+				var r = n.Call("Attack");
+				GD.Print($"Called child {n.Name}.Attack(), result={r}");
+				return;
+			}
+		}
 
-    private void UpdatePlayerStats()
-    {
-        GameEvents.EmitPlayerStatsChanged(StatType.Health, Stats.CurrentHealth, Stats.MaxHealth);
-        GameEvents.EmitPlayerStatsChanged(StatType.Mana, Stats.CurrentMana, Stats.MaxMana);
-        GameEvents.EmitPlayerStatsChanged(StatType.Stamina, Stats.CurrentStamina, Stats.MaxStamina);
-    }
+		GD.PrintErr($"No attack animation or weapon Attack method found for '{Name}'.");
+	}
+
+	private void CastSpell()
+	{
+		// 由法杖/法术系统处理具体施法逻辑
+		if (AnimPlayer != null)
+		{
+			if (AnimPlayer.HasAnimation("cast_spell"))
+			{
+				AnimPlayer.Play("cast_spell");
+			}
+			else
+			{
+				GD.PrintErr($"Animation 'cast_spell' not found on '{Name}' AnimationPlayer. Skipping play.");
+			}
+		}
+	}
+
+	private void UpdatePlayerStats()
+	{
+		GameEvents.EmitPlayerStatsChanged(StatType.Health, Stats.CurrentHealth, Stats.MaxHealth);
+		GameEvents.EmitPlayerStatsChanged(StatType.Mana, Stats.CurrentMana, Stats.MaxMana);
+		GameEvents.EmitPlayerStatsChanged(StatType.Stamina, Stats.CurrentStamina, Stats.MaxStamina);
+	}
 }

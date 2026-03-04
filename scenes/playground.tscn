@@ -1,6 +1,0 @@
-[gd_scene format=3 uid="uid://d1p5ly3br77vk"]
-
-[ext_resource type="Script" uid="uid://dmbx2ktohkiww" path="res://Playground.cs" id="1_hddm4"]
-
-[node name="playground" type="Node3D" unique_id=1689671455]
-script = ExtResource("1_hddm4")
