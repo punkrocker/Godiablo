@@ -36,6 +36,8 @@ namespace Diablo.Scripts.Camera
         public float PanSensitivity = 0.002f;
         [Export]
         public float SmoothSpeed = 10.0f;
+        [Export]
+        public bool AutoCenterOnTarget = false; // when true, pressing toggle_camera_lock centers behind target
 
         private Node3D _target = null;
         private float _desiredDistance;
@@ -107,6 +109,21 @@ namespace Diablo.Scripts.Camera
                 else if (mb.ButtonIndex == MouseButton.WheelDown && mb.Pressed)
                 {
                     _desiredDistance = Math.Min(MaxDistance, _desiredDistance + ZoomSpeed);
+                }
+            }
+
+            // Toggle camera lock/center behind target
+            if (@event is InputEventKey keyEvent)
+            {
+                if (InputMap.HasAction("toggle_camera_lock") && keyEvent.IsActionPressed("toggle_camera_lock"))
+                {
+                    if (AutoCenterOnTarget && _target != null)
+                    {
+                        // center camera behind target instantly by aligning yaw to target's forward
+                        var forward = _target.GlobalTransform.Basis.Z;
+                        var targetYaw = Mathf.Atan2(forward.X, forward.Z);
+                        _desiredYaw = targetYaw;
+                    }
                 }
             }
         }

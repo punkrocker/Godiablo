@@ -16,6 +16,7 @@ public partial class PlayerCharacter : CharacterBase
 	[Export] public float StaminaDrainRate { get; set; } = 10f;
 	[Export] public float InteractionRange { get; set; } = 3.0f;
 	[Export] public float JumpVelocity { get; set; } = 5.0f;
+	[Export] public float RotationSmoothSpeed { get; set; } = 3.0f; // radians/sec smoothing
 
 
 	private Camera3D _camera;
@@ -111,7 +112,7 @@ public partial class PlayerCharacter : CharacterBase
 
 		// 冲刺与潜行
 		_isSprinting = InputMap.HasAction(PlayerInputActions.Sprint) &&
-					   Input.IsActionPressed(PlayerInputActions.Sprint) && Stats.CurrentStamina > 0;
+					Input.IsActionPressed(PlayerInputActions.Sprint) && Stats.CurrentStamina > 0;
 		_isSneaking = InputMap.HasAction(PlayerInputActions.Sneak) && Input.IsActionPressed(PlayerInputActions.Sneak);
 
 		float speed = MoveSpeed;
@@ -125,12 +126,32 @@ public partial class PlayerCharacter : CharacterBase
 			speed *= SneakMultiplier;
 		}
 
-		// 朝向移动方向
+		// WoW-style facing rules:
+		// - When the player is holding the camera rotate button (e.g. RMB), movement strafes relative to camera and the character does NOT auto-rotate.
+		// - When not holding camera rotate and there is movement input, the character smoothly rotates to face movement direction.
+
+		bool holdingCameraRotate = Input.IsActionPressed("camera_rotate");
+
 		if (direction != Vector3.Zero)
 		{
-			var lookTarget = GlobalPosition + direction;
-			lookTarget.Y = GlobalPosition.Y;
-			LookAt(lookTarget);
+			if (!holdingCameraRotate)
+			{
+				// Smoothly rotate towards movement direction (only yaw)
+				var flatDir = direction;
+				flatDir.Y = 0;
+				if (flatDir.Length() > 0.001f)
+				{
+					// Calculate target yaw based on movement direction
+					float targetYaw = Mathf.Atan2(flatDir.X, flatDir.Z);
+					float currentYaw = Rotation.Y;
+					float newYaw = Mathf.LerpAngle(currentYaw, targetYaw, Mathf.Clamp(delta * RotationSmoothSpeed, 0f, 1f));
+					Rotation = new Vector3(0f, newYaw, 0f);
+				}
+			}
+			else
+			{
+				// holding camera rotate -> do not rotate character; optionally we can keep player facing current rotation
+			}
 		}
 
 		ApplyMovement(direction, speed, delta);
