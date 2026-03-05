@@ -2,7 +2,7 @@
 using Diablo.Core.Enums;
 using Diablo.Core.Events;
 
-namespace Diablo.UI.Controllers;
+namespace Diablo.Scripts.UI.Controllers;
 
 /// <summary>
 /// HUD控制器
@@ -22,6 +22,17 @@ public partial class HUDController : Control
 
     public override void _Ready()
     {
+        // auto-find nodes if not assigned in inspector
+        if (HealthBar == null) HealthBar = GetNodeOrNull<ProgressBar>("StatsPanel/HealthBar");
+        if (ManaBar == null) ManaBar = GetNodeOrNull<ProgressBar>("StatsPanel/ManaBar");
+        if (StaminaBar == null) StaminaBar = GetNodeOrNull<ProgressBar>("StatsPanel/StaminaBar");
+        if (HealthLabel == null) HealthLabel = GetNodeOrNull<Label>("StatsPanel/LabelsRow/HealthLabel");
+        if (ManaLabel == null) ManaLabel = GetNodeOrNull<Label>("StatsPanel/LabelsRow/ManaLabel");
+        if (StaminaLabel == null) StaminaLabel = GetNodeOrNull<Label>("StatsPanel/LabelsRow/StaminaLabel");
+        if (LevelLabel == null) LevelLabel = GetNodeOrNull<Label>("StatsPanel/LabelsRow/LevelLabel");
+        if (InteractionPromptLabel == null) InteractionPromptLabel = GetNodeOrNull<Label>("InteractionPromptLabel");
+        if (CrosshairPanel == null) CrosshairPanel = GetNodeOrNull<Panel>("CrosshairPanel");
+
         GameEvents.OnPlayerStatsChanged += OnStatsChanged;
         GameEvents.OnPlayerLevelUp += OnLevelUp;
         GameEvents.OnInteractionAvailable += OnInteractionAvailable;
@@ -41,6 +52,7 @@ public partial class HUDController : Control
 
     private void OnStatsChanged(StatType stat, float current, float max)
     {
+        GD.Print($"[HUDController] OnStatsChanged: {stat} {current}/{max}");
         switch (stat)
         {
             case StatType.Health:
@@ -94,4 +106,3 @@ public partial class HUDController : Control
         }
     }
 }
-

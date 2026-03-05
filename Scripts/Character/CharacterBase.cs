@@ -1,8 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using Diablo.Character;
 using Godot;
 using Diablo.Core.Enums;
 using Diablo.Core.Events;
 using Diablo.Combat;
+using Diablo.Scripts.Character;
 
 namespace Diablo.Character;
 
@@ -23,7 +24,7 @@ public abstract partial class CharacterBase : CharacterBody3D
     [Signal] public delegate void StatsChangedEventHandler();
 
     protected AnimationPlayer AnimPlayer;
-    protected bool IsDead = false;
+    protected bool IsDead;
 
     public override void _Ready()
     {
@@ -64,10 +65,19 @@ public abstract partial class CharacterBase : CharacterBody3D
     {
         if (IsDead) return;
 
-        float finalDamage = DamageCalculator.CalculateDefense(damageInfo.Amount, Stats.BaseArmor,
-            Stats.Resistances.GetValueOrDefault(damageInfo.Type, 0f));
+        float resistance = 0f;
+        if (Stats.Resistances != null)
+        {
+            Stats.Resistances.TryGetValue(damageInfo.Type, out resistance);
+        }
+        float finalDamage = DamageCalculator.CalculateDefense(damageInfo.Amount, Stats.BaseArmor, resistance);
 
         Stats.ModifyHealth(-finalDamage);
+        // 如果是玩家，立即广播血量变化以便 HUD 立刻更新
+        if (this is PlayerCharacter)
+        {
+            GameEvents.EmitPlayerStatsChanged(StatType.Health, Stats.CurrentHealth, Stats.MaxHealth);
+        }
         EmitSignal(SignalName.DamageTaken, finalDamage, (int)damageInfo.Type);
         EmitSignal(SignalName.StatsChanged);
 
@@ -126,4 +136,3 @@ public abstract partial class CharacterBase : CharacterBody3D
         MoveAndSlide();
     }
 }
-

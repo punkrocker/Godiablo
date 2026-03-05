@@ -1,6 +1,7 @@
 ﻿using Godot;
 using Diablo.Character;
 using Diablo.Loot;
+using Diablo.Scripts.Character;
 
 namespace Diablo.Enemy;
 

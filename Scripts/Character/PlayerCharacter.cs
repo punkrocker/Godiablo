@@ -98,7 +98,7 @@ public partial class PlayerCharacter : CharacterBase
 			PlayerInputActions.MoveForward, PlayerInputActions.MoveBackward
 		);
 
-		var direction = Vector3.Zero;
+		Vector3 direction;
 		if (_camera != null)
 		{
 			var camTransform = _camera.GlobalTransform;
@@ -216,11 +216,15 @@ public partial class PlayerCharacter : CharacterBase
 		// As last fallback, try to call Attack on any child Weapon node
 		foreach (var child in GetChildren())
 		{
-			if (child is Node n && n.HasMethod("Attack"))
+			if (child is Node)
 			{
-				var r = n.Call("Attack");
-				GD.Print($"Called child {n.Name}.Attack(), result={r}");
-				return;
+				var n = (Node)child;
+				if (n.HasMethod("Attack"))
+				{
+					var r = n.Call("Attack");
+					GD.Print($"Called child {n.Name}.Attack(), result={r}");
+					return;
+				}
 			}
 		}
 
@@ -248,5 +252,27 @@ public partial class PlayerCharacter : CharacterBase
 		GameEvents.EmitPlayerStatsChanged(StatType.Health, Stats.CurrentHealth, Stats.MaxHealth);
 		GameEvents.EmitPlayerStatsChanged(StatType.Mana, Stats.CurrentMana, Stats.MaxMana);
 		GameEvents.EmitPlayerStatsChanged(StatType.Stamina, Stats.CurrentStamina, Stats.MaxStamina);
+	}
+
+	private bool _kDown = false;
+
+	public override void _Process(double delta)
+	{
+		base._Process(delta);
+		// 临时调试按键：按 K 对玩家造成 10 点伤害（只在按下瞬间触发）
+		// if (Input.IsKeyPressed((int)KeyList.K))
+		// {
+		// 	if (!_kDown)
+		// 	{
+		// 		_kDown = true;
+		// 		var dmg = new Diablo.Combat.DamageInfo(EntityId, 10f, Diablo.Core.Enums.DamageType.Physical);
+		// 		TakeDamage(dmg);
+		// 		GD.Print($"[DEBUG] Applied 10 damage to player. CurrentHP={Stats.CurrentHealth}");
+		// 	}
+		// }
+		// else
+		// {
+		// 	_kDown = false;
+		// }
 	}
 }

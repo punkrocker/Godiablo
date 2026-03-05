@@ -1,4 +1,5 @@
 ﻿using Diablo.Core.Enums;
+using Godot;
 
 namespace Diablo.Core.Events;
 
@@ -86,7 +87,10 @@ public static class GameEvents
     public delegate void PlayerStatsChangedHandler(StatType statType, float newValue, float maxValue);
     public static event PlayerStatsChangedHandler OnPlayerStatsChanged;
     public static void EmitPlayerStatsChanged(StatType statType, float newValue, float maxValue)
-        => OnPlayerStatsChanged?.Invoke(statType, newValue, maxValue);
+    {
+        GD.Print($"[GameEvents] EmitPlayerStatsChanged: {statType} {newValue}/{maxValue}");
+        OnPlayerStatsChanged?.Invoke(statType, newValue, maxValue);
+    }
 
     // ===== 交互事件 =====
     public delegate void InteractionAvailableHandler(string interactableId, string promptText);
@@ -99,4 +103,3 @@ public static class GameEvents
     public static void EmitInteractionCleared()
         => OnInteractionCleared?.Invoke();
 }
-
