@@ -3,15 +3,13 @@
 [ext_resource type="Script" uid="uid://bpc78iyx4x3pk" path="res://Scripts/Character/PlayerCharacter.cs" id="1"]
 [ext_resource type="Script" uid="uid://b2b4gjmx2152s" path="res://Scripts/Combat/HurtBox.cs" id="2"]
 [ext_resource type="Script" uid="uid://8crxucuuvuaq" path="res://Scripts/Inventory/Inventory.cs" id="3"]
+[ext_resource type="Script" uid="uid://dpx6a5u0ve8l3" path="res://Scripts/Camera/ThirdPersonCamera.cs" id="3_0owmy"]
 [ext_resource type="Script" uid="uid://nx04neonrpue" path="res://Scripts/Inventory/EquipmentManager.cs" id="4"]
 [ext_resource type="PackedScene" path="res://scenes/weapon/melee_weapon.tscn" id="5"]
 [ext_resource type="Resource" uid="uid://4yeyn3vlp5jt" path="res://Data/player_stats.tres" id="6"]
+[ext_resource type="PackedScene" uid="uid://c3agmdtrm3fw1" path="res://Model/Character/Player/Warrior/warrior.glb" id="8_qek5x"]
 
 [sub_resource type="CapsuleShape3D" id="1"]
-radius = 0.4
-height = 1.8
-
-[sub_resource type="CapsuleMesh" id="2"]
 radius = 0.4
 height = 1.8
 
@@ -40,12 +38,10 @@ EntityId = "player"
 [node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=2140304121]
 shape = SubResource("1")
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=1650241939]
-mesh = SubResource("2")
-
 [node name="Camera3D" type="Camera3D" parent="." unique_id=960560741]
-transform = Transform3D(1, 0, 0, 0, 0.9992497, 0, 0, 0, 0.9992497, 0, 1.8, 3.5)
+transform = Transform3D(-0.002234024, 0, -0.9999975, 0, 1, 0, 0.9999975, 0, -0.002234024, -3.5901701, 2.1754355, -0.09128189)
 current = true
+script = ExtResource("3_0owmy")
 
 [node name="InteractionRay" type="RayCast3D" parent="." unique_id=1184899520]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
@@ -72,3 +68,5 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, 0.9, -0.3)
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=1267782460]
 libraries/ = SubResource("AnimationLibrary_5gtgg")
+
+[node name="warrior" parent="." unique_id=2030011668 instance=ExtResource("8_qek5x")]

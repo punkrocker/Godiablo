@@ -1,8 +1,7 @@
 [gd_scene format=3 uid="uid://t5kwwp4cicc2"]
 
 [ext_resource type="PackedScene" uid="uid://cnqm0by47mcdl" path="res://scenes/player/player.tscn" id="1"]
-[ext_resource type="PackedScene" path="res://scenes/enemy/melee_enemy.tscn" id="2"]
-[ext_resource type="Script" uid="uid://dpx6a5u0ve8l3" path="res://Scripts/Camera/ThirdPersonCamera.cs" id="3"]
+[ext_resource type="PackedScene" uid="uid://dqfuvx4o5nu6i" path="res://scenes/enemy/melee_enemy.tscn" id="2"]
 [ext_resource type="PackedScene" path="res://scenes/main/hud.tscn" id="4"]
 
 [sub_resource type="BoxMesh" id="1"]
@@ -29,11 +28,6 @@ navigation_mesh = SubResource("4")
 [node name="MainScene#Player" parent="." unique_id=1310149818 instance=ExtResource("1")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
 
-[node name="MainScene#Camera3D" type="Camera3D" parent="MainScene#Player" unique_id=987654321]
-transform = Transform3D(0.99950147, 0.023559928, -0.021015862, -0.023865998, 0.9996109, -0.014436241, 0.020667572, 0.014930612, 0.99967486, -1.3339516, 1.4815106, 0)
-current = true
-script = ExtResource("3")
-
 [node name="MainScene#MeleeEnemy" parent="." unique_id=214884040 instance=ExtResource("2")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5, 1, -5)
 
@@ -45,4 +39,4 @@ grow_horizontal = 2
 grow_vertical = 2
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=288199996]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7.0270724, 5.7782555, 0)
+transform = Transform3D(-0.9794839, -0.20152241, 0, 0.20152241, -0.9794839, 0, 0, 0, 1, -7.0270724, 13.843626, 0)

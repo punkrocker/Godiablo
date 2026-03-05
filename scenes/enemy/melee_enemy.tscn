@@ -6,12 +6,9 @@
 [ext_resource type="Script" uid="uid://cl8aanbfwotwg" path="res://Scripts/Loot/LootDropper.cs" id="4_ld"]
 [ext_resource type="Resource" path="res://Data/melee_enemy_stats.tres" id="5_stats"]
 [ext_resource type="Resource" uid="uid://db4corxbb5y37" path="res://Data/LootTables/basic_enemy.tres" id="6_hydb6"]
+[ext_resource type="PackedScene" uid="uid://bpayk38aj1u0a" path="res://Model/Enemy/Zombie/zombie.glb" id="7_4gb5g"]
 
 [sub_resource type="CapsuleShape3D" id="1_col"]
-radius = 0.4
-height = 1.8
-
-[sub_resource type="CapsuleMesh" id="2_mesh"]
 radius = 0.4
 height = 1.8
 
@@ -26,9 +23,6 @@ EntityId = "melee_enemy_01"
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=1003954848]
 shape = SubResource("1_col")
-
-[node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=944923076]
-mesh = SubResource("2_mesh")
 
 [node name="NavigationAgent3D" type="NavigationAgent3D" parent="." unique_id=1916142245]
 path_desired_distance = 0.5
@@ -48,3 +42,5 @@ shape = SubResource("1_col")
 [node name="LootDropper" type="Node" parent="." unique_id=1739470983]
 script = ExtResource("4_ld")
 Table = ExtResource("6_hydb6")
+
+[node name="zombie" parent="." unique_id=1114997613 instance=ExtResource("7_4gb5g")]
